@@ -9,4 +9,6 @@
 - 更新插件： `:BundleInstall!`
 - 卸载不在列表中的插件： `:BundleClean"`
 
+add something
+
 更多插件：http://vim-scripts.org/vim/scripts.html
