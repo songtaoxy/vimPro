@@ -1,0 +1,398 @@
+" gvim界面语言设置. 英语或中文;
+" 如果要想英语, 则使用下面两行设置. 如果想用中文, 注释掉即可.
+" 要想使用英语, 这两行,必须在" source $VIMRUNTIME/vimrc_example.vim" 之上,  "否则中文设置不起作用
+let $LANG='en'  "set message language  
+set langmenu=en   "set menu's language of gvim. no spaces beside '=' 
+source $VIMRUNTIME/vimrc_example.vim
+source $VIMRUNTIME/mswin.vim
+behave mswin
+
+
+"设置字体颜色
+colorscheme desert
+"去掉讨厌的有关vi一致性模式，避免以前版本的一些bug和局限
+set nocompatible
+"显示行号
+set number
+"检测文件的类型
+"显示标尺
+set ruler
+filetype on "required! 
+"记录历史的行数
+set history=1000 
+"背景使用黑色
+set background=dark 
+"语法高亮度显示
+syntax on 
+"下面两行在进行编写代码时，在格式对齐上很有用；
+"vim使用自动对起，也就是把当前行的对起格式应用到下一行；
+
+"设置vim不进行自动备份
+set nobackup
+set nowritebackup
+
+"add new config
+
+
+"设置netrw格式
+let g:netrw_liststyle = 3
+
+"字体及其大小设置
+set guifont=Courier_new:h15
+" 字体粗
+set guifont=Courier_new:h11:b:cDEFAULT
+
+"ex命令自动补全功能； tab 补全；tab选择； Ctrl-d
+"全部显示
+set wildmenu
+set wildmode=full
+
+"窗口大小设置
+set lines=30 columns=80
+" 设定行间距
+set linespace=5
+"每行多少字符
+set textwidth=78
+
+
+"将undo 和备份文件统一写到.undodir文件夹中，防止其分散
+"undodir=~/.undodir
+  set noundofile
+  set nobackup
+  set noswapfile
+
+" 去掉输入错误提示声音
+"set noeb
+" 自动保存
+set autowrite
+" 突出显示当前行 
+set cursorline
+" 突出显示当前列
+set cursorcolumn
+"设置光标样式为竖线vertical bar
+" Change cursor shape between insert and normal mode in iTerm2.app
+"if $TERM_PROGRAM =~ "iTerm2"
+let &t_SI = "\<Esc>]50;CursorShape=1\x7" " Vertical bar in insert mode
+let &t_EI = "\<Esc>]50;CursorShape=0\x7" " Block in normal mode
+"endif
+" 共享剪贴板
+set clipboard+=unnamed
+" 文件被改动时自动载入
+set autoread
+" 顶部底部保持3行距离
+set scrolloff=3
+
+
+
+
+
+
+set autoindent
+"依据上面的对起格式，智能的选择对起方式，对于类似C语言编写上很有用
+set smartindent
+"第一行设置tab键为4个空格，第二行设置当行之间交错时使用4个空格
+set tabstop=4
+set shiftwidth=4
+"设置匹配模式，类似当输入一个左括号时会匹配相应的那个右括号
+set showmatch
+"去除vim的GUI版本中的toolbar
+set guioptions-=T
+"当vim进行编辑时，如果命令错误，会发出一个响声，该设置去掉响声
+"set vb t_vb=
+"在编辑过程中，在右下角显示光标位置的状态行
+set ruler
+"默认情况下，寻找匹配是高亮度显示的，该设置关闭高亮显示
+"set nohls
+"查询时非常方便，如要查找book单词，当输入到/b时，会自动找到第一
+"个b开头的单词，当输入到/bo时，会自动找到第一个bo开头的单词，依
+"次类推，进行查找时，使用此设置会快速找到答案，当你找要匹配的单词
+"时，别忘记回车
+set incsearch
+"修改一个文件后，自动进行备份，备份的文件名为原文件名加“~“后缀
+if has("vms")
+set nobackup
+else
+"set backup
+endif
+:set cul
+
+" 输入的命令显示出来，看的清楚些
+set showcmd
+" 状态行显示的内容
+set statusline=%F%m%r%h%w\ [FORMAT=%{&ff}]\ [TYPE=%Y]\ [POS=%l,%v][%p%%]\ %{strftime(\"%d/%m/%y\ -\ %H:%M\")}
+" 启动显示状态行1，总是显示状态行2
+set laststatus=2
+
+" 语法高亮显示
+" vim  中文无法显示，显示多国语言.
+"set fileencodings=utf-8,gbk,ucs-bom,cp936 
+set encoding=gbk
+set termencoding=gbk
+set: fileencoding=utf-8  指的是, 文件以utf-8编码集保存.
+set fileencodings=utf-8,gb2312,gbk,cp936,latin-1
+
+
+set diffexpr=MyDiff()
+function MyDiff()
+  let opt = '-a --binary '
+  if &diffopt =~ 'icase' | let opt = opt . '-i ' | endif
+  if &diffopt =~ 'iwhite' | let opt = opt . '-b ' | endif
+  let arg1 = v:fname_in
+  if arg1 =~ ' ' | let arg1 = '"' . arg1 . '"' | endif
+  let arg2 = v:fname_new
+  if arg2 =~ ' ' | let arg2 = '"' . arg2 . '"' | endif
+  let arg3 = v:fname_out
+  if arg3 =~ ' ' | let arg3 = '"' . arg3 . '"' | endif
+  if $VIMRUNTIME =~ ' '
+    if &sh =~ '\<cmd'
+      if empty(&shellxquote)
+        let l:shxq_sav = ''
+        set shellxquote&
+      endif
+      let cmd = '"' . $VIMRUNTIME . '\diff"'
+    else
+      let cmd = substitute($VIMRUNTIME, ' ', '" ', '') . '\diff"'
+    endif
+  else
+    let cmd = $VIMRUNTIME . '\diff'
+  endif
+  silent execute '!' . cmd . ' ' . opt . arg1 . ' ' . arg2 . ' > ' . arg3
+  if exists('l:shxq_sav')
+    let &shellxquote=l:shxq_sav
+  endif
+endfunction
+
+
+
+
+
+"查找文本当前选中的文本
+"在可视模式下，使用* 或 # 来直接查找选中的文本
+xnoremap * :<C-u>call<SID>VSetSearch()<CR>/<C-R>=@/<CR><CR>
+xnoremap # :<C-u>call<SID>VSetSearch()<CR>?<C-R>=@/<CR><CR>
+function! s:VSetSearch()
+	let temp = @s
+	norm! gv"sy
+	let @/='\V'.substitute(escape(@s,'/\'),'\n','\\n','g')
+	let @s = temp
+endfunction
+
+
+" j k 是面对实际行的； gj,gk 是真的虚拟行的
+nnoremap k gk
+nnoremap gk k
+nnoremap j gj
+nnoremap gj j
+
+"config the find path
+:set path+=C:\Users\songtao\Desktop,D:\temConif\vimconfig\vimDefaultPath
+
+" 改变vim的默认工作路径
+"exec 'cd ' . fnameescape('D:\temConif\vimconfig\vimDefaultPath')
+"exec 'cd ' . fnameescape('C:\Users\songtao\Desktop')
+
+
+"在substitute命令中, 修正&命令: 将& 替代 && 
+nnoremap & :&&<CR>
+xnoremap & :&&<CR>
+
+
+
+
+
+
+"..................................................................
+"插件备份: 将$home\.vim\bundle进行备份, 可以离线使用
+"windows下, vundle下载的插件放置路径: $home\.vim\bundle; 
+"其中 $home根据不同的用户而改变. 比如$home = "c:\Users\songtao"
+
+"vundle相关设置, 参考: "https://github.com/VundleVim/Vundle.vim" 
+
+"vundle plugin 使用vundle 管理插件，自己的安装的插件都可以写在这里
+
+" The following are examples of different formats supported.
+" Keep Plugin commands between "vundle#begin/end".
+
+" 插件分为四类
+" 1, plugin on GitHub repo;vim-scripts用户,只需写 "repos名"
+" 2, plugin on GitHub repo;其他用户,只需要写 "用户名/respos名"
+" 3, Git plugin not hosted on GitHub. "要写出git的全路径"
+" 4, git repos on your local machine (i.e. when working on your own plugin)
+" Bundle 'file:///home/gmarik/path/to/plugin'
+"..................................................................
+
+
+"set the runtime path to include Vundle and initialize(linux/windows)
+"Vundle安装路径,不是固定的,可以按自己的实际需求来定
+
+set rtp+=~/.vim/bundle/Vundle.vim  "linux config
+"set rtp+=$VIM/vimfiles/bundle/Vundle.vim/   "windows config
+call vundle#begin()
+"alternatively, pass a path where Vundle should install plugins
+"call vundle#begin('~/some/path/here')
+
+"旧版的, Bundle 'gmarik/vundle'
+"新版: let Vundle manage Vundle, required
+"Bundle 'VundleVim/Vundle.vim'
+Plugin 'VundleVim/Vundle.vim' "mac 配置
+
+"my Bundle here:
+" 插件种类一：在github上面的，用户/项目：original repos on github...........................................
+Plugin 'tpope/vim-fugitive'
+Bundle 'godlygeek/tabular'     
+Bundle 'Markdown'
+Bundle 'Markdown-syntax'
+Bundle 'sukima/xmledit'
+Bundle 'sjl/gundo.vim'
+"Bundle 'jiangmiao/auto-pairs'
+"Bundle 'klen/python-mode'
+Bundle 'Valloric/ListToggle'
+"Bundle 'SirVer/ultisnips'
+
+"自动补全, 但对windows支持不好
+Bundle 'Valloric/YouCompleteMe' 
+"自动补全, 是YouCompleteMe的改进版
+"Bundle 'xleng/YCM_WIN_X86'  
+
+Bundle 'scrooloose/syntastic'
+Bundle 't9md/vim-quickhl'
+"Bundle 'Lokaltog/vim-powerline'
+"Bundle 'scrooloose/nerdcommenter'
+"插件种类二： vim-scripts repos..................................................
+Bundle 'YankRing.vim'
+Bundle 'vcscommand.vim'
+"Bundle 'ShowPairs'
+Bundle 'SudoEdit.vim'
+Bundle 'EasyGrep'
+"Bundle 'VOoM'
+"Bundle 'VimIM'
+ 
+"..................................
+"插件种类三：不在github,但是在git上，需要绝对的路径 non github repos...............................
+ Bundle 'git://git.wincent.com/command-t.git'
+"...........................................................................
+
+"功能, 状态栏设置
+"Bundle 'bling/vim-airline'
+"set laststatus=2
+
+"Bundle 'taglist.vim'       
+Bundle 'vim-scripts/taglist.vim'
+
+Bundle 'SpaceVim/SpaceVim'
+
+
+"..................................
+"markdown plugin
+
+Bundle 'mzlogin/vim-markdown-toc'
+"功能,生成 markdown目录
+"使用, 生成目录; 更新目录等
+"参考1, "https://github.com/mzlogin/vim-markdown-toc"
+"参考2, "https://segmentfault.com/a/1190000007265252"
+
+Bundle 'gabrielelana/vim-markdown'
+"参考1, "https://github.com/gabrielelana/vim-markdown"
+
+Bundle 'majutsushi/tagbar' 
+"功能, 大纲
+"参考, "https://github.com/majutsushi/tagbar"
+
+"..................................
+
+
+" All of your Plugins must be added before the following lin
+call vundle#end()            " require
+filetype plugin indent on    " required
+"To ignore plugin indent changes, instead use:
+"filetype plugin on
+
+ 
+"......................................
+"下面vundle的一些命令
+ "
+ " Brief help
+ " :BundleList          - list configured bundles
+ " :BundleInstall    - install bundles
+ " :BundleInstall!    - update bundles
+ " :BundleSearch(!) foo - search(or refresh cache first) for foo
+ " :BundleClean(!)      - confirm(or auto-approve) removal of unused bundles
+ "
+ " see :h vundle for more details or wiki for FAQ
+ " NOTE: comments after Bundle command are not allowed.
+
+
+
+"-------------------------------------------------------------------------------
+"			插件界面设置
+"-------------------------------------------------------------------------------
+ 
+"ctags的设置，这里的ctags是用MacPorts安装的，用Vundle安装的'ctags.vim'有问题，系统自带的ctags也有点问题
+let Tlist_Ctags_Cmd="/usr/local/bin/ctags"
+ 
+let Tlist_Exist_OnlyWindow=1 " 如果taglist窗口是最后一个窗口，则退出vim
+"let Tlist_Auto_Update "Update the tag list automatically
+ 
+"在vim左侧显示窗口Taglist和文件列表窗口
+"let g:winManagerWindowLayout='FileExplorer,BufExplorer|TagList'
+let g:winManagerWindowLayout='NERDTree, BufExplorer|TagList'
+"打开vim时自动打开winmanager
+let g:AutoOpenWinManager = 1
+
+let Tlist_Show_One_File=1 "不同时显示多个文件的tag，只显示当前文件的
+let Tlist_WinWidt =28 "设置taglist的宽度
+let Tlist_Exit_OnlyWindow=1 "如果taglist窗口是最后一个窗口，则退出vim
+"let Tlist_Use_Right_Window=1 "在右侧窗口中显示taglist窗口
+let Tlist_Use_Left_Windo =1 "在左侧窗口中显示taglist窗口 
+
+"设置文件路径
+"set tags=~/tags
+
+
+
+
+
+"-------------------------------------------------------------------------------
+"		YouCompleteMe 配置	
+"-------------------------------------------------------------------------------
+" 自动补全配置
+set completeopt=longest,menu "让Vim的补全菜单行为与一般IDE一致(参考VimTip1228)
+autocmd InsertLeave * if pumvisible() == 0|pclose|endif "离开插入模式后自动关闭预览窗口
+inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<CR>" "回车即选中当前项
+"上下左右键的行为 会显示其他信息
+inoremap <expr> <Down> pumvisible() ? "\<C-n>" : "\<Down>"
+inoremap <expr> <Up> pumvisible() ? "\<C-p>" : "\<Up>"
+inoremap <expr> <PageDown> pumvisible() ? "\<PageDown>\<C-p>\<C-n>" : "\<PageDown>"
+inoremap <expr> <PageUp> pumvisible() ? "\<PageUp>\<C-p>\<C-n>" : "\<PageUp>"
+
+"youcompleteme 默认tab s-tab 和自动补全冲突
+"let g:ycm_key_list_select_completion=['<c-n>']
+let g:ycm_key_list_select_completion = ['<Down>']
+"let g:ycm_key_list_previous_completion=['<c-p>']
+let g:ycm_key_list_previous_completion = ['<Up>']
+let g:ycm_confirm_extra_conf=0 "关闭加载.ycm_extra_conf.py提示
+
+let g:ycm_collect_identifiers_from_tags_files=1 " 开启 YCM 基于标签引擎
+let g:ycm_min_num_of_chars_for_completion=2 " 从第2个键入字符就开始罗列匹配项
+let g:ycm_cache_omnifunc=0 " 禁止缓存匹配项,每次都重新生成匹配项
+let g:ycm_seed_identifiers_with_syntax=1 " 语法关键字补全
+nnoremap <F5> :YcmForceCompileAndDiagnostics<CR> "force recomile with syntastic
+"nnoremap <leader>lo :lopen<CR> "open locationlist
+"nnoremap <leader>lc :lclose<CR> "close locationlist
+inoremap <leader><leader> <C-x><C-o>
+"在注释输入中也能补全
+let g:ycm_complete_in_comments = 1
+"在字符串输入中也能补全
+let g:ycm_complete_in_strings = 1
+"注释和字符串中的文字也会被收入补全
+let g:ycm_collect_identifiers_from_comments_and_strings = 0
+
+nnoremap <leader>jd :YcmCompleter GoToDefinitionElseDeclaration<CR> " 跳转到定义处
+
+"自动补全, 添加对 Python3的支持
+"安装 youcompleteme 之后, 切换目录: cd ~/.vim/bundle/YouCompleteMe 
+"我的系统默认Python版本不是Python3,然后当时安装的时候,我运行./install.py,我的YouCompleteMe只能支持Python2的语法补全
+"如果要使用Python3的语法补全的话,请找到YouCompleteMe的安装目录,运行python3 ./install.py就可以了
+"然后在.vimrc中添加 let g:ycm_server_python_interpreter='/usr/bin/python3.5'就可以了
+let g:ycm_server_python_interpreter='/anaconda3/bin/python3.6'  "python是通过 anaconda 安装的, 其中的路径, 需要根据实际路径来确定.
+
