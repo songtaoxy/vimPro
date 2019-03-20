@@ -11,4 +11,6 @@
 
 add something
 
+...
+
 更多插件：http://vim-scripts.org/vim/scripts.html
